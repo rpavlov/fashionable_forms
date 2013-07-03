@@ -10,6 +10,8 @@
     </div>
   <% end %>
 
+  <%= f.hidden_field :product_type_id %>
+
   <div class="field">
     <%= f.label :name %><br />
     <%= f.text_field :name %>
@@ -18,6 +20,15 @@
     <%= f.label :price %><br />
     <%= f.text_field :price %>
   </div>
+
+  <!--This is where the magic happens. This allows us to specify a different
+  #partial for each field_type. -->
+  <%= f.fields_for :properties, OpenStruct.new(@product.properties) do |builder| %>
+    <% @product.product_type.fields.each do |field|%>
+      <%= render "products/fields/#{field.field_type}", field: field, f: builder %>
+    <%end%>
+  <%end%>
+
   <div class="actions">
     <%= f.submit %>
   </div>
